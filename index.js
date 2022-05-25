@@ -12,9 +12,6 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// user: toolTonicMK
-// pass: behW8CHtTyotnJ7F
-
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.i2ey8.mongodb.net/?retryWrites=true&w=majority`;
 
