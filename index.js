@@ -62,7 +62,7 @@ run().catch(console.dir);
 
 
 app.get("/", (req, res) => {
-    res.send("broh is Tool Tonic... working??...  yes it is.. ");
+    res.send("broh is Tool Tonic.. working??...  yes it is.. ");
   });
   
   
