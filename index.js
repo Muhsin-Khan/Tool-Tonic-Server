@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const jwt = require('jsonwebtoken');
+// const jwt = require('jsonwebtoken');
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 // const { query } = require("express");
 require("dotenv").config();
@@ -65,29 +65,42 @@ async function run() {
         $set: user,
       };
       const result = await userCollection.updateOne(filter, updateDoc, options);
-      const token = jwt.sign({email:email}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1h'})
-      res.send(result, token);
+      // const token = jwt.sign({email:email}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1h'})
+      res.send(result);
     });
 
     // Making Admin from User's ....
     app.put("/user/admin/:email", async (req, res) => {
       const email = req.params.email;
-      
+      // const requester = req.email;
+      // console.log("asdfdasfaaaaaadsf",requester)
+      // requesterAccount = await userCollection.findOne({email: requester});
+
       const filter = { email: email };
-      
+
       const updateDoc = {
-        $set: {role: 'admin'},
+        $set: { role: "admin" },
       };
       const result = await userCollection.updateOne(filter, updateDoc);
       res.send(result);
+
+      // if (requesterAccount?.role === "admin") {} else {
+      //   res.status(403).send({ message: "Sorry! this is restrictred" });
+      // }
     });
-    
+
+    app.get("/admin/:email", async (req, res) => {
+      const email = req.params.email;
+      const user = await userCollection.findOne({ email: email });
+      const isAdmin = user?.role === "admin";
+      res.send({ admin: isAdmin });
+    });
+
     // Loading All user on admin's page......
-    app.get('/user', async(req, res)=>{
+    app.get("/user", async (req, res) => {
       const users = await userCollection.find().toArray();
       res.send(users);
-    })
-
+    });
   } finally {
   }
 }
