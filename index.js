@@ -58,6 +58,14 @@ async function run() {
       res.send(result);
     })
 
+    // getting or loading All orders so we can mange in admin page....
+    app.get("/order", async (req, res) => {
+      const query = {};
+      const cursor = orderCollection.find(query);
+      const orders = await cursor.toArray();
+      res.send(orders);
+    });
+
     app.post("/order", async (req, res) => {
       const order = req.body;
       const result = await orderCollection.insertOne(order);
@@ -71,6 +79,13 @@ async function run() {
       const orders = await orderCollection.find(query).toArray();
       res.send(orders);
     });
+    // Managing All Products the product.....
+    app.delete('/order/:id', async (req, res) =>{
+      const id = req.params.id;
+      const query = {_id: ObjectId(id)};
+      const result = await productCollection.deleteOne(query);
+      res.send(result);
+    })
 
     // Updating User's information from backend....
     app.put("/user/:email", async (req, res) => {
