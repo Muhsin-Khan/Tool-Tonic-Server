@@ -27,13 +27,22 @@ async function run() {
     const orderCollection = client.db("tool-tonic").collection("orders");
     const userCollection = client.db("tool-tonic").collection("users");
 
+    // Loading all product....
     app.get("/product", async (req, res) => {
       const query = {};
       const cursor = productCollection.find(query);
       const products = await cursor.toArray();
       res.send(products);
     });
+    
+    // Adding New Product.....
+    app.post("/product", async (req, res) => {
+      const newProduct = req.body;
+      const result = await productCollection.insertOne(newProduct);
+      res.send(result);
+    });
 
+    // Finding an specific product to purchase.........
     app.get("/product/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
