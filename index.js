@@ -26,6 +26,7 @@ async function run() {
     const productCollection = client.db("tool-tonic").collection("products");
     const orderCollection = client.db("tool-tonic").collection("orders");
     const userCollection = client.db("tool-tonic").collection("users");
+    const reviewCollection = client.db("tool-tonic").collection("reviews");
 
     // Loading all product....
     app.get("/product", async (req, res) => {
@@ -58,14 +59,6 @@ async function run() {
       res.send(result);
     })
 
-    // getting or loading All orders so we can mange in admin page....
-    app.get("/order", async (req, res) => {
-      const query = {};
-      const cursor = orderCollection.find(query);
-      const orders = await cursor.toArray();
-      res.send(orders);
-    });
-
     app.post("/order", async (req, res) => {
       const order = req.body;
       const result = await orderCollection.insertOne(order);
@@ -76,8 +69,8 @@ async function run() {
     app.get("/order", async (req, res) => {
       const customerEmail = req.query.customerEmail;
       const query = { customerEmail: customerEmail };
-      const orders = await orderCollection.find(query).toArray();
-      res.send(orders);
+      const order = await orderCollection.find(query).toArray();
+      res.send(order);
     });
     // Managing All Products the product.....
     app.delete('/order/:id', async (req, res) =>{
@@ -86,6 +79,14 @@ async function run() {
       const result = await productCollection.deleteOne(query);
       res.send(result);
     })
+
+    // getting or loading All orders so we can mange in admin page....
+    app.get("/order", async (req, res) => {
+      const query = {};
+      const cursor = orderCollection.find(query);
+      const orders = await cursor.toArray();
+      res.send(orders);
+    });
 
     // Updating User's information from backend....
     app.put("/user/:email", async (req, res) => {
@@ -97,16 +98,14 @@ async function run() {
         $set: user,
       };
       const result = await userCollection.updateOne(filter, updateDoc, options);
-      // const token = jwt.sign({email:email}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1h'})
+      
       res.send(result);
     });
 
     // Making Admin from User's ....
     app.put("/user/admin/:email", async (req, res) => {
       const email = req.params.email;
-      // const requester = req.email;
-      // console.log("asdfdasfaaaaaadsf",requester)
-      // requesterAccount = await userCollection.findOne({email: requester});
+      
 
       const filter = { email: email };
 
@@ -132,6 +131,20 @@ async function run() {
     app.get("/user", async (req, res) => {
       const users = await userCollection.find().toArray();
       res.send(users);
+    });
+
+    // Loading all review....
+    app.get("/review", async (req, res) => {
+      const query = {};
+      const cursor = reviewCollection.find(query);
+      const reviews = await cursor.toArray();
+      res.send(reviews);
+    });
+    // Adding a review
+    app.post("/review", async (req, res) => {
+      const newReview = req.body;
+      const result = await reviewCollection.insertOne(newReview);
+      res.send(result);
     });
   } finally {
   }
